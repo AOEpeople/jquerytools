@@ -69,6 +69,10 @@
 		 */
 		fn: function(matcher, msg, fn, override) {
 			// no message supplied
+      if (fn === true || fn === false) {
+        override = fn;
+      }
+
 			if ($.isFunction(msg)) { 
 				fn = msg; 
 				
