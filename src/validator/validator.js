@@ -67,8 +67,7 @@
 		/** 
 		 * Adds a new validator 
 		 */
-		fn: function(matcher, msg, fn) {
-			
+		fn: function(matcher, msg, fn, override) {
 			// no message supplied
 			if ($.isFunction(msg)) { 
 				fn = msg; 
@@ -81,10 +80,23 @@
 
 			// check for "[type=xxx]" (not supported by jQuery)
 			var test = typeRe.exec(matcher);                                    
-			if (test) { matcher = isType(test[1]); }				
-			
-			// add validator to the arsenal
-			fns.push([matcher, fn]);		 
+			if (test) { matcher = isType(test[1]); }
+
+			var overridden = false;
+			if (override) {
+				// replace same matcher
+				fns.forEach(function(fnData, i) {
+					if ($.inArray(matcher, fnData) > -1) {
+						fns[i] = [matcher, fn];
+						overridden = true;
+					}
+				});
+			}
+
+			if (!overridden) {
+				// add validator to the arsenal
+				fns.push([matcher, fn]);
+			}
 		},
 
 		/* Add new show/hide effect */
